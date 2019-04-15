@@ -3,7 +3,9 @@ package com.xuan.android.library;
 import android.app.Application;
 
 import com.xuan.android.library.core.EnergyProvider;
+import com.xuan.android.library.injectview.InjectPageViewer;
 import com.xuan.android.library.toast.ToastManager;
+import com.xuan.android.library.ui.IViewInjector;
 
 /**
  * Author : xuan.
@@ -48,5 +50,12 @@ public class AnyDoor {
      */
     public static void showToast(CharSequence toast) {
         ToastManager.showToast(toast);
+    }
+
+    /**
+     * 添加View
+     */
+    public static void showView(IViewInjector viewInjector) {
+        InjectPageViewer.show(viewInjector);
     }
 }

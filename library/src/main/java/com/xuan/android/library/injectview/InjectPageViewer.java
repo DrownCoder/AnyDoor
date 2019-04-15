@@ -2,6 +2,9 @@ package com.xuan.android.library.injectview;
 
 import android.app.Application;
 
+import com.xuan.android.library.AnyDoor;
+import com.xuan.android.library.ui.IViewInjector;
+
 /**
  * Author : xuan.
  * Date : 2019/4/12.
@@ -26,5 +29,12 @@ public class InjectPageViewer {
             }
         }
         return instance;
+    }
+
+    public synchronized static void show(IViewInjector viewInjector) {
+        if (viewInjector == null) {
+            return;
+        }
+        AnyDoor.provider().engine().add(AnyDoor.provider().factory().create(viewInjector));
     }
 }
