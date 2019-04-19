@@ -3,10 +3,12 @@ package com.xuan.android.library.core;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.view.View;
 
 import com.xuan.android.library.AnyDoor;
 import com.xuan.android.library.model.Task;
 
+import java.lang.ref.WeakReference;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -21,8 +23,11 @@ import static com.xuan.android.library.AnyDoorConfig.*;
 public class TaskEngine extends Handler {
     private static final int TYPE_SHOW = 1; // 显示布局
     private static final int TYPE_DISMISS = 2; // 显示布局
-    private volatile Queue<Task> taskQueue;
-    private volatile Queue<Task> pendingTask;
+    private volatile Queue<Task> taskQueue;//任务队列
+    private volatile Queue<Task> runQueue;//执行队列
+    private volatile Queue<Task> pendingTask;//待执行队列
+    private WeakReference<View> injectView;
+    private boolean running;
 
     public TaskEngine() {
         taskQueue = new ArrayBlockingQueue<>(MAX_QUEUE_SIZE);
@@ -63,7 +68,9 @@ public class TaskEngine extends Handler {
                 Task task = taskQueue.peek();
                 if (task != null) {
                     //执行显示逻辑
-                    AnyDoor.provider().injector().inject(task.viewInjector);
+                    View view = task.viewInjector.injectView(AnyDoor.provider().application());
+                    injectView = new WeakReference<>(view);
+                    AnyDoor.provider().injector().inject(view, task.viewInjector);
                     //回收Task
                     AnyDoor.provider().factory().recycle(task);
                 } else {
@@ -74,7 +81,12 @@ public class TaskEngine extends Handler {
                 //移除View
                 Task missTask = (Task) msg.obj;
                 if (missTask != null) {
-                    AnyDoor.provider().injector().remove(missTask.view, missTask.viewInjector);
+                    if (injectView != null) {
+                        View view = injectView.get();
+                        if (view != null) {
+                            AnyDoor.provider().injector().remove(view, missTask.viewInjector);
+                        }
+                    }
                 }
                 //没有任务后，执行待执行任务
                 for (int i = 0; i < MAX_QUEUE_SIZE; i++) {

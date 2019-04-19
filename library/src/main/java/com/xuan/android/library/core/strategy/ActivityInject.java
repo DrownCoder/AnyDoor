@@ -21,8 +21,8 @@ import com.xuan.android.library.ui.IViewInjector;
 public class ActivityInject implements InjectStrategy {
 
     @Override
-    public void inject(final IViewInjector viewInjector) {
-        if (viewInjector == null) {
+    public void inject(View view, final IViewInjector viewInjector) {
+        if (viewInjector == null || view == null) {
             return;
         }
         final Activity activity = AnyDoor.provider().activity();
@@ -32,10 +32,6 @@ public class ActivityInject implements InjectStrategy {
         //获取Activity的父布局
         FrameLayout content = activity.getWindow().getDecorView().findViewById(android.R.id
                 .content);
-        final View view = viewInjector.injectView(AnyDoor.provider().application());
-        if (view == null) {
-            return;
-        }
         //从父布局移除
         removeViewFromParent(view);
         ViewGroup.LayoutParams params = view.getLayoutParams();

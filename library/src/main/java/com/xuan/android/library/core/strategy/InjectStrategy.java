@@ -10,7 +10,7 @@ import com.xuan.android.library.ui.IViewInjector;
  * Description :注入策略
  */
 public interface InjectStrategy {
-    void inject(IViewInjector viewInjector);
+    void inject(View view, IViewInjector viewInjector);
 
     void remove(View view, IViewInjector viewInjector);
 }

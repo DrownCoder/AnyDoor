@@ -1,7 +1,5 @@
 package com.xuan.android.library.model;
 
-import android.view.View;
-
 import com.xuan.android.library.ui.IViewInjector;
 
 /**
@@ -12,13 +10,11 @@ import com.xuan.android.library.ui.IViewInjector;
 public class Task {
     public long delay;
     public long duration;
-    public View view;
     public IViewInjector viewInjector;
 
     public void recycle() {
         delay = 0;
         duration = 0;
         viewInjector = null;
-        view = null;
     }
 }
