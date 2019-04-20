@@ -23,9 +23,10 @@ public class TaskFactory implements ITaskFactory {
     public Task create(IViewInjector viewInjector) {
         Task task = taskPool.peek();
         if (task == null) {
-            task = new Task();
+            task = new Task(viewInjector);
+        } else {
+            task.recover(viewInjector);
         }
-        task.viewInjector = viewInjector;
         return task;
     }
 
