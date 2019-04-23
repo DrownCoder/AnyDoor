@@ -8,6 +8,7 @@ import com.xuan.android.library.AnyDoor;
 import com.xuan.android.library.model.Task;
 
 import java.lang.ref.WeakReference;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -16,9 +17,9 @@ import static com.xuan.android.library.AnyDoorConfig.*;
 /**
  * Author : xuan.
  * Date : 2019/4/15.
- * Description :任务队列
+ * Description :任务中心
  */
-public class TaskEngine extends Handler {
+public class TaskCenter extends Handler {
     private static final int TYPE_SHOW = 1; // 显示布局
     private static final int TYPE_DISMISS = 2; // 隐藏布局
     private static final int TYPE_DIRECT_SHOW = 3; // 直接显示布局
@@ -27,8 +28,8 @@ public class TaskEngine extends Handler {
     private WeakReference<View> injectView;
     private boolean runningLock;
 
-    public TaskEngine() {
-        taskQueue = new PriorityBlockingQueue<>(MAX_QUEUE_SIZE);
+    public TaskCenter() {
+        taskQueue = new PriorityQueue<>(MAX_QUEUE_SIZE);
     }
 
     public void add(Task task) {
@@ -76,7 +77,7 @@ public class TaskEngine extends Handler {
         switch (msg.what) {
             case TYPE_SHOW:
                 if (!runningLock) {
-                    //如果当前正在执行，这当前这个消息过时了，放弃执行
+                    //如果当前正在执行，这当前这个消息过时了，放弃执行，继续存入队列
                     Task task = taskQueue.poll();
                     if (task != null) {
                         //执行显示逻辑

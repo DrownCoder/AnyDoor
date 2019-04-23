@@ -20,7 +20,7 @@ public class EnergyProvider {
     private ActivityObserver activityObserver;
     private Application application;
     private InjectStrategy injectStrategy;
-    private TaskEngine engine;
+    private TaskCenter engine;
     private ITaskFactory factory;
 
     public EnergyProvider(Application application) {
@@ -30,7 +30,7 @@ public class EnergyProvider {
         ToastManager.init(application);
         InjectPageViewer.init(application);
         injectStrategy = new ActivityInject();
-        engine = new TaskEngine();
+        engine = new TaskCenter();
         factory = new TaskFactory();
     }
 
@@ -50,7 +50,7 @@ public class EnergyProvider {
         return injectStrategy;
     }
 
-    public TaskEngine engine() {
+    public TaskCenter engine() {
         return engine;
     }
 
