@@ -10,6 +10,4 @@ import com.xuan.android.library.ui.IViewInjector;
  */
 public interface ITaskFactory {
     Task create(IViewInjector viewInjector);
-
-    void recycle(Task task);
 }

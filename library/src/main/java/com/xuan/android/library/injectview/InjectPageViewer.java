@@ -1,8 +1,12 @@
 package com.xuan.android.library.injectview;
 
 import android.app.Application;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 
 import com.xuan.android.library.AnyDoor;
+import com.xuan.android.library.life.LifeFragment;
+import com.xuan.android.library.life.LifeObserver;
 import com.xuan.android.library.ui.IViewInjector;
 
 /**
@@ -35,6 +39,15 @@ public class InjectPageViewer {
         if (viewInjector == null) {
             return;
         }
+        if (viewInjector instanceof LifeObserver) {
+            FragmentManager fragmentManager = AnyDoor.provider().activity().getFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            LifeFragment lifeFragment = LifeFragment.newInstance();
+            lifeFragment.setLifeCycle((LifeObserver) viewInjector);
+            transaction.add(lifeFragment, "");
+            transaction.commitAllowingStateLoss();
+        }
         AnyDoor.provider().engine().add(AnyDoor.provider().factory().create(viewInjector));
     }
+
 }

@@ -8,6 +8,6 @@ package com.xuan.android.library;
 public class AnyDoorConfig {
     //默认显示时长
     public static final long DEFAULT_DOOR_DURATION = 2000;
-    //同时能显示的消息数
-    public static final int MAX_QUEUE_SIZE = 3;
+    //弹窗的显示时长界限，超过这个时长，则认为是优先弹窗，不受task队列限制
+    public static final int MAX_SHOW_LIMIT = 5000;
 }

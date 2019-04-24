@@ -2,10 +2,13 @@ package com.xuan.android.library.core;
 
 import android.app.Activity;
 import android.app.Application;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.view.WindowManager;
 
 import com.xuan.android.library.core.factory.ITaskFactory;
 import com.xuan.android.library.core.strategy.ActivityInject;
+import com.xuan.android.library.core.strategy.DialogFragmentInject;
 import com.xuan.android.library.core.strategy.InjectStrategy;
 import com.xuan.android.library.injectview.InjectPageViewer;
 import com.xuan.android.library.life.ActivityObserver;
@@ -42,11 +45,18 @@ public class EnergyProvider {
         return activityObserver.getCurActivity();
     }
 
+    public Fragment fragment() {
+        return activityObserver.getCurFragment();
+    }
+
     public Application application() {
         return application;
     }
 
     public InjectStrategy injector() {
+        if (activityObserver.getCurFragment() instanceof DialogFragment) {
+            return new DialogFragmentInject();
+        }
         return injectStrategy;
     }
 
