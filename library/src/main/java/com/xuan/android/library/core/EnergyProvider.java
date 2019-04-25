@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
@@ -36,7 +35,7 @@ public class EnergyProvider {
         ToastManager.init(application);
         InjectPageViewer.init(application);
         injectStrategy = new ActivityInject();
-        engine = new TaskCenter();
+        engine = new TaskCenter(application.getMainLooper());
         factory = new TaskFactory();
     }
 

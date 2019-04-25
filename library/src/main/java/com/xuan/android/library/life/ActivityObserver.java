@@ -10,8 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.WindowManager;
 
-import com.xuan.android.library.injectview.InjectPageViewer;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package com.xuan.android.library.core;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -10,28 +11,30 @@ import com.xuan.android.library.model.Task;
 import com.xuan.android.library.ui.IViewInjector;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Author : xuan.
  * Date : 2019/4/15.
- * Description :任务中心
+ * Description :任务中心,主线程的消息队列
  */
 public class TaskCenter extends Handler {
     private static final int TYPE_SHOW = 1; // 显示布局
     private static final int TYPE_DISMISS = 2; // 隐藏布局
     private static final int TYPE_DIRECT_SHOW = 3; // 直接显示布局
     private Queue<Task> taskQueue;//任务队列
-    private WeakReference<View> taskView;//正在显示的View
-    private Task runningTask;//正在执行的任务
-    private HashMap<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
-    private boolean runningLock;//是否执行任务的标识为
+    private volatile WeakReference<View> taskView;//正在显示的View
+    private volatile Task runningTask;//正在执行的任务
+    private Map<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
+    private volatile boolean runningLock;//是否执行任务的标识为
 
-    public TaskCenter() {
-        taskQueue = new PriorityQueue<>();
-        directViews = new HashMap<>();
+    public TaskCenter(Looper mainLooper) {
+        super(mainLooper);
+        taskQueue = new PriorityBlockingQueue<>();
+        directViews = new ConcurrentHashMap<>();
     }
 
     public void add(Task task) {
@@ -82,7 +85,7 @@ public class TaskCenter extends Handler {
      * 取消执行的任务
      */
     public void cancelRunningTask() {
-        if (runningLock && runningTask != null) {
+        if (runningTask != null) {
             dismiss(runningTask);
         }
     }
@@ -164,6 +167,7 @@ public class TaskCenter extends Handler {
             }
         }
         runningLock = false;
+        runningTask = null;
     }
 }
 

@@ -8,7 +8,7 @@ import com.xuan.android.library.life.LifeObserver;
 /**
  * Author : xuan.
  * Date : 2019/4/24.
- * Description :the description of this file
+ * Description :可以监控生命周期回调的注入的View
  */
 public abstract class LifeViewInjector extends BaseViewInjector implements LifeObserver {
     @Override
