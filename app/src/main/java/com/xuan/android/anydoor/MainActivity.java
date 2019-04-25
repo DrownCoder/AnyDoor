@@ -7,18 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xuan.android.library.AnyDoor;
 import com.xuan.android.library.ui.BaseViewInjector;
 import com.xuan.android.library.ui.LifeViewInjector;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 public class MainActivity extends AppCompatActivity {
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.i("xxxxxxxxxxx", msg.what+"");
+            Log.i("xxxxxxxxxxx", msg.what + "");
         }
     };
 
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.test1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*AnyDoor.showView(new BaseViewInjector() {
+                /*AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
                     public View injectView(Context context) {
                         TextView textView = new TextView(context);
@@ -49,25 +53,30 @@ public class MainActivity extends AppCompatActivity {
                         return 6000;
                     }
                 });*/
-                //TestDialogFragment.newInstance().show(getSupportFragmentManager(), "");
-                AnyDoor.showView(new LifeInjector());
+                TestDialogFragment.newInstance().show(getSupportFragmentManager(), "");
+                //AnyDoor.openDoor(new LifeInjector());
             }
         });
 
         findViewById(R.id.test2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AnyDoor.showView(new BaseViewInjector() {
+                AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
                     public View injectView(Context context) {
-                        TextView textView = new TextView(context);
-                        textView.setText("延迟2s！");
-                        return textView;
+                        View view = LayoutInflater.from(context).inflate(R.layout.msg_layout, null);
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams
+                                (MATCH_PARENT, dp2px(context, 50));
+                        params.leftMargin = dp2px(context, 20);
+                        params.rightMargin = dp2px(context, 20);
+                        params.topMargin = dp2px(context, 15);
+                        view.setLayoutParams(params);
+                        return view;
                     }
 
                     @Override
                     public int gravity() {
-                        return Gravity.BOTTOM;
+                        return Gravity.TOP | Gravity.CENTER_HORIZONTAL;
                     }
 
                     @Override
@@ -77,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public long duration() {
-                        return 5000;
+                        return 4000;
                     }
                 });
             }
@@ -86,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.test3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AnyDoor.showView(new BaseViewInjector() {
+                AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
                     public View injectView(Context context) {
                         TextView textView = new TextView(context);

@@ -38,28 +38,43 @@ public class ActivityInject implements InjectStrategy {
         if (params instanceof FrameLayout.LayoutParams) {
             ((FrameLayout.LayoutParams) params).gravity = viewInjector.gravity();
         } else {
-            params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
-                    .LayoutParams.WRAP_CONTENT, viewInjector.gravity());
+            if (params != null) {
+                if (params instanceof ViewGroup.MarginLayoutParams) {
+                    int left, top, right, bottom;
+                    left = ((ViewGroup.MarginLayoutParams) params).leftMargin;
+                    top = ((ViewGroup.MarginLayoutParams) params).topMargin;
+                    right = ((ViewGroup.MarginLayoutParams) params).rightMargin;
+                    bottom = ((ViewGroup.MarginLayoutParams) params).bottomMargin;
+                    params = new FrameLayout.LayoutParams(params.width, params.height,
+                            viewInjector.gravity());
+                    ((FrameLayout.LayoutParams) params).leftMargin = left;
+                    ((FrameLayout.LayoutParams) params).topMargin = top;
+                    ((FrameLayout.LayoutParams) params).rightMargin = right;
+                    ((FrameLayout.LayoutParams) params).bottomMargin = bottom;
+                } else {
+                    params = new FrameLayout.LayoutParams(params.width, params.height,
+                            viewInjector.gravity());
+                }
+            } else {
+                params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
+                        .LayoutParams.WRAP_CONTENT, viewInjector.gravity());
+            }
         }
         content.addView(view, params);
         final Animator animator = viewInjector.enter(view);
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                if (animator != null) {
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            AnyDoor.provider().engine().dismiss(
-                                    AnyDoor.provider().factory().create(viewInjector));
-                        }
-                    });
-                } else {
+        if (animator != null) {
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
                     AnyDoor.provider().engine().dismiss(
                             AnyDoor.provider().factory().create(viewInjector));
                 }
-            }
-        });
+            });
+            animator.start();
+        } else {
+            AnyDoor.provider().engine().dismiss(
+                    AnyDoor.provider().factory().create(viewInjector));
+        }
     }
 
     @Override
@@ -67,16 +82,19 @@ public class ActivityInject implements InjectStrategy {
         if (viewInjector == null || view == null) {
             return;
         }
-        Animator animator = viewInjector.out(view);
-        if (animator != null) {
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    removeViewFromParent(view);
-                }
-            });
-        } else {
-            removeViewFromParent(view);
+        if (view.getParent() != null) {
+            Animator animator = viewInjector.out(view);
+            if (animator != null) {
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        removeViewFromParent(view);
+                    }
+                });
+                animator.start();
+            } else {
+                removeViewFromParent(view);
+            }
         }
     }
 

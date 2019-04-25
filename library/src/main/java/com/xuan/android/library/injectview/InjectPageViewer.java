@@ -35,7 +35,7 @@ public class InjectPageViewer {
         return instance;
     }
 
-    public synchronized static void show(IViewInjector viewInjector) {
+    public static void show(IViewInjector viewInjector, boolean constrained) {
         if (viewInjector == null) {
             return;
         }
@@ -47,7 +47,11 @@ public class InjectPageViewer {
             transaction.add(lifeFragment, "");
             transaction.commitAllowingStateLoss();
         }
-        AnyDoor.provider().engine().add(AnyDoor.provider().factory().create(viewInjector));
+        AnyDoor.provider().engine().add(AnyDoor.provider().factory().create(viewInjector,
+                constrained));
     }
 
+    public static void dismiss(IViewInjector viewInjector) {
+        AnyDoor.provider().engine().dismiss(AnyDoor.provider().factory().create(viewInjector));
+    }
 }

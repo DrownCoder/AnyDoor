@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.xuan.android.library.core.factory.ITaskFactory;
+import com.xuan.android.library.core.factory.TaskFactory;
 import com.xuan.android.library.core.strategy.ActivityInject;
 import com.xuan.android.library.core.strategy.DialogFragmentInject;
 import com.xuan.android.library.core.strategy.InjectStrategy;
@@ -54,7 +57,8 @@ public class EnergyProvider {
     }
 
     public InjectStrategy injector() {
-        if (activityObserver.getCurFragment() instanceof DialogFragment) {
+        if (activityObserver.getCurFragment() instanceof DialogFragment && checkDialogValid
+                ((DialogFragment) activityObserver.getCurFragment())) {
             return new DialogFragmentInject();
         }
         return injectStrategy;
@@ -66,5 +70,26 @@ public class EnergyProvider {
 
     public ITaskFactory factory() {
         return factory;
+    }
+
+
+    /**
+     * 校验DialogFragment符合注入要求:是一个全屏幕的DialogFragment
+     * 否则不能向DialogFragment注入，因为不是全屏的，那么注入的布局会被缩放
+     *
+     * @param dialogFragment 当前的DialogFragment
+     * @return true-可以注入DialogFragment false-还是注入Activity
+     */
+    private boolean checkDialogValid(DialogFragment dialogFragment) {
+        if (dialogFragment.getDialog().getWindow() == null) {
+            return false;
+        }
+        WindowManager.LayoutParams windowParams = dialogFragment.getDialog().getWindow()
+                .getAttributes();
+        if (windowParams == null || windowParams.width != ViewGroup.LayoutParams.MATCH_PARENT ||
+                windowParams.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+            return false;
+        }
+        return true;
     }
 }

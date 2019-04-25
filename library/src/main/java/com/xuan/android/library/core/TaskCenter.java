@@ -24,9 +24,10 @@ public class TaskCenter extends Handler {
     private static final int TYPE_DISMISS = 2; // 隐藏布局
     private static final int TYPE_DIRECT_SHOW = 3; // 直接显示布局
     private Queue<Task> taskQueue;//任务队列
-    private WeakReference<View> taskView;
-    private HashMap<IViewInjector, WeakReference<View>> directViews;
-    private boolean runningLock;
+    private WeakReference<View> taskView;//正在显示的View
+    private Task runningTask;//正在执行的任务
+    private HashMap<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
+    private boolean runningLock;//是否执行任务的标识为
 
     public TaskCenter() {
         taskQueue = new PriorityQueue<>();
@@ -63,6 +64,9 @@ public class TaskCenter extends Handler {
         }
     }
 
+    /**
+     * 取消某个任务
+     */
     public void dismiss(Task task) {
         if (task == null) {
             return;
@@ -74,21 +78,41 @@ public class TaskCenter extends Handler {
         sendMessageDelayed(message, task.duration);
     }
 
+    /**
+     * 取消执行的任务
+     */
+    public void cancelRunningTask() {
+        if (runningLock && runningTask != null) {
+            dismiss(runningTask);
+        }
+    }
+
+    /**
+     * 取消所有任务
+     */
+    public void cancelAllTask() {
+        cancelRunningTask();
+        removeCallbacksAndMessages(null);
+        taskQueue.clear();
+    }
+
     @Override
     public void handleMessage(Message msg) {
         switch (msg.what) {
             case TYPE_SHOW:
                 //如果当前正在执行，这当前这个消息过时了，放弃执行，继续存入队列
                 if (!runningLock) {
-                    Task task = taskQueue.poll();
+                    runningTask = taskQueue.poll();
+
                     //否则取出任务执行
-                    if (task != null) {
+                    if (runningTask != null) {
                         //执行显示逻辑
                         Log.i("xxxxxxxxxx", "执行任务！");
                         runningLock = true;
-                        View view = task.viewInjector.injectView(AnyDoor.provider().activity());
+                        View view = runningTask.viewInjector.injectView(AnyDoor.provider()
+                                .activity());
                         taskView = new WeakReference<>(view);
-                        AnyDoor.provider().injector().inject(view, task.viewInjector);
+                        AnyDoor.provider().injector().inject(view, runningTask.viewInjector);
                     }
                 }
                 break;

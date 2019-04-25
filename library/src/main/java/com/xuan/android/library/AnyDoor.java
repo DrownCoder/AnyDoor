@@ -54,8 +54,43 @@ public class AnyDoor {
 
     /**
      * 添加View
+     *
+     * @param viewInjector 注入的View
      */
-    public static void showView(IViewInjector viewInjector) {
-        InjectPageViewer.show(viewInjector);
+    public static void openDoor(IViewInjector viewInjector) {
+        openDoor(viewInjector, true);
+    }
+
+    /**
+     * 添加View
+     *
+     * @param viewInjector 注入的View
+     * @param constrained  是否受任务队列的约束
+     */
+    public static void openDoor(IViewInjector viewInjector, boolean constrained) {
+        InjectPageViewer.show(viewInjector, constrained);
+    }
+
+    /**
+     * 移除注入的View
+     *
+     * @param viewInjector 注入的View，保证和添加的是同一实例
+     */
+    public static void closeDoor(IViewInjector viewInjector) {
+        InjectPageViewer.dismiss(viewInjector);
+    }
+
+    /**
+     * 移除正在显示的View
+     */
+    public static void cancel() {
+        AnyDoor.provider().engine().cancelRunningTask();
+    }
+
+    /**
+     * 移除所有任务的View，包括未执行的
+     */
+    public static void clear() {
+        AnyDoor.provider().engine().cancelAllTask();
     }
 }

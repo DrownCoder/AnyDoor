@@ -9,5 +9,7 @@ import com.xuan.android.library.ui.IViewInjector;
  * Description :任务加工工厂
  */
 public interface ITaskFactory {
+    Task create(IViewInjector viewInjector, boolean constrained);
+
     Task create(IViewInjector viewInjector);
 }

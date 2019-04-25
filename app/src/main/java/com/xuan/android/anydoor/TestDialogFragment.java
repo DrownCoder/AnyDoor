@@ -27,7 +27,7 @@ public class TestDialogFragment extends BaseFullScreenDialogFragment {
         mView.findViewById(R.id.tv_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AnyDoor.showView(new BaseViewInjector() {
+                AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
                     public View injectView(Context context) {
                         TextView textView = new TextView(context);

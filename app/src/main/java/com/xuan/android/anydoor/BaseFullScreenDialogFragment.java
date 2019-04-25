@@ -53,8 +53,8 @@ public abstract class BaseFullScreenDialogFragment extends DialogFragment {
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         }
         WindowManager.LayoutParams params = win.getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.width = 300;
+        params.height = 300;
         win.setAttributes(params);
         init();
         return mView;

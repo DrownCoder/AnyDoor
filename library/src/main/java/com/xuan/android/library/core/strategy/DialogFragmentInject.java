@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.xuan.android.library.AnyDoor;
@@ -16,6 +17,7 @@ import com.xuan.android.library.ui.IViewInjector;
  * Author : xuan.
  * Date : 2019/4/24.
  * Description :DialogFragment类型的注入
+ * 只支持全屏幕的DialogFragment
  */
 public class DialogFragmentInject implements InjectStrategy {
     @Override

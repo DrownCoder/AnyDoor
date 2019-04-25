@@ -1,7 +1,5 @@
 package com.xuan.android.library.model;
 
-import android.os.SystemClock;
-
 import com.xuan.android.library.ui.IViewInjector;
 
 /**
