@@ -2,6 +2,7 @@ package com.xuan.android.anydoor;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.xuan.android.library.AnyDoor;
@@ -29,7 +30,7 @@ public class TestDialogFragment extends BaseFullScreenDialogFragment {
             public void onClick(View v) {
                 AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
-                    public View injectView(Context context) {
+                    public View injectView(Context context, ViewGroup parent) {
                         TextView textView = new TextView(context);
                         textView.setText("延迟1s！");
                         return textView;

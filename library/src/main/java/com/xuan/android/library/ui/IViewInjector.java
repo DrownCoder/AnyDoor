@@ -3,6 +3,7 @@ package com.xuan.android.library.ui;
 import android.animation.Animator;
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Author : xuan.
@@ -13,7 +14,7 @@ public interface IViewInjector {
     /**
      * 注入View
      */
-    View injectView(Context context);
+    View injectView(Context context, ViewGroup parent);
 
     /**
      * 进入动画

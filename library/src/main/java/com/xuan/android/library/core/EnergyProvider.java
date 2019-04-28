@@ -2,31 +2,37 @@ package com.xuan.android.library.core;
 
 import android.app.Activity;
 import android.app.Application;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.xuan.android.library.core.factory.IInjectStrategyFactory;
 import com.xuan.android.library.core.factory.ITaskFactory;
+import com.xuan.android.library.core.factory.StrategyFactory;
 import com.xuan.android.library.core.factory.TaskFactory;
-import com.xuan.android.library.core.strategy.ActivityInject;
-import com.xuan.android.library.core.strategy.DialogFragmentInject;
 import com.xuan.android.library.core.strategy.InjectStrategy;
 import com.xuan.android.library.injectview.InjectPageViewer;
 import com.xuan.android.library.life.ActivityObserver;
 import com.xuan.android.library.toast.ToastManager;
+import com.xuan.android.library.ui.IViewInjector;
 
 /**
  * Author : xuan.
  * Date : 2019/4/13.
- * Description :初始化参数
+ * Description :初始化参数，工具包装提供类
  */
 public class EnergyProvider {
-    private ActivityObserver activityObserver;
     private Application application;
-    private InjectStrategy injectStrategy;
+
+    //activity生命周期观察者
+    private ActivityObserver activityObserver;
+    //任务中心，任务管理
     private TaskCenter engine;
+    //注入View的管理类
+    private InjectViewManager viewManager;
+    //task工厂
     private ITaskFactory factory;
+    //注入策略工厂
+    private IInjectStrategyFactory strategyFactory;
 
     public EnergyProvider(Application application) {
         this.application = application;
@@ -34,9 +40,14 @@ public class EnergyProvider {
         application.registerActivityLifecycleCallbacks(activityObserver);
         ToastManager.init(application);
         InjectPageViewer.init(application);
-        injectStrategy = new ActivityInject();
         engine = new TaskCenter(application.getMainLooper());
+        viewManager = new InjectViewManager();
         factory = new TaskFactory();
+        strategyFactory = new StrategyFactory(activityObserver);
+    }
+
+    InjectStrategy injector(IViewInjector viewInjector) {
+        return strategyFactory.injectStrategy(viewInjector);
     }
 
     public WindowManager windowManager() {
@@ -55,12 +66,12 @@ public class EnergyProvider {
         return application;
     }
 
-    public InjectStrategy injector() {
-        if (activityObserver.getCurFragment() instanceof DialogFragment && checkDialogValid
-                ((DialogFragment) activityObserver.getCurFragment())) {
-            return new DialogFragmentInject();
-        }
-        return injectStrategy;
+    public boolean inject(IViewInjector viewInjector, boolean isDirect) {
+        return viewManager.inject(viewInjector, isDirect);
+    }
+
+    public boolean remove(IViewInjector viewInjector) {
+        return viewManager.remove(viewInjector);
     }
 
     public TaskCenter engine() {
@@ -69,26 +80,5 @@ public class EnergyProvider {
 
     public ITaskFactory factory() {
         return factory;
-    }
-
-
-    /**
-     * 校验DialogFragment符合注入要求:是一个全屏幕的DialogFragment
-     * 否则不能向DialogFragment注入，因为不是全屏的，那么注入的布局会被缩放
-     *
-     * @param dialogFragment 当前的DialogFragment
-     * @return true-可以注入DialogFragment false-还是注入Activity
-     */
-    private boolean checkDialogValid(DialogFragment dialogFragment) {
-        if (dialogFragment.getDialog().getWindow() == null) {
-            return false;
-        }
-        WindowManager.LayoutParams windowParams = dialogFragment.getDialog().getWindow()
-                .getAttributes();
-        if (windowParams == null || windowParams.width != ViewGroup.LayoutParams.MATCH_PARENT ||
-                windowParams.height != ViewGroup.LayoutParams.MATCH_PARENT) {
-            return false;
-        }
-        return true;
     }
 }

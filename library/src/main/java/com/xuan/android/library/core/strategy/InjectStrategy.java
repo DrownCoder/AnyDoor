@@ -1,6 +1,7 @@
 package com.xuan.android.library.core.strategy;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.xuan.android.library.ui.IViewInjector;
 
@@ -15,4 +16,6 @@ public interface InjectStrategy {
 
     //移除方式
     void remove(View view, IViewInjector viewInjector);
+
+    ViewGroup parentView();
 }

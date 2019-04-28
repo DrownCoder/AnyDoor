@@ -22,25 +22,10 @@ import com.xuan.android.library.ui.IViewInjector;
 public class DialogFragmentInject implements InjectStrategy {
     @Override
     public void inject(View view, final IViewInjector viewInjector) {
-        if (viewInjector == null || view == null) {
+        ViewGroup parent = parentView();
+        if (parent == null) {
             return;
         }
-        Fragment fragment = AnyDoor.provider().fragment();
-        if (fragment == null || !fragment.isAdded()) {
-            return;
-        }
-        DialogFragment dialogFragment;
-        if (fragment instanceof DialogFragment) {
-            dialogFragment = (DialogFragment) fragment;
-        } else {
-            return;
-        }
-        if (dialogFragment.getDialog().getWindow() == null) {
-            return;
-        }
-        //获取DialogFragment的父布局
-        FrameLayout content = dialogFragment.getDialog().getWindow().getDecorView().findViewById
-                (android.R.id.content);
         //从父布局移除
         removeViewFromParent(view);
         ViewGroup.LayoutParams params = view.getLayoutParams();
@@ -50,7 +35,7 @@ public class DialogFragmentInject implements InjectStrategy {
             params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
                     .LayoutParams.WRAP_CONTENT, viewInjector.gravity());
         }
-        content.addView(view, params);
+        parent.addView(view, params);
         final Animator animator = viewInjector.enter(view);
         view.post(new Runnable() {
             @Override
@@ -87,6 +72,26 @@ public class DialogFragmentInject implements InjectStrategy {
         } else {
             removeViewFromParent(view);
         }
+    }
+
+    @Override
+    public ViewGroup parentView() {
+        Fragment fragment = AnyDoor.provider().fragment();
+        if (fragment == null || !fragment.isAdded()) {
+            return null;
+        }
+        DialogFragment dialogFragment;
+        if (fragment instanceof DialogFragment) {
+            dialogFragment = (DialogFragment) fragment;
+        } else {
+            return null;
+        }
+        if (dialogFragment.getDialog().getWindow() == null) {
+            return null;
+        }
+        //获取DialogFragment的父布局
+        return dialogFragment.getDialog().getWindow().getDecorView().findViewById
+                (android.R.id.content);
     }
 
     private void removeViewFromParent(View view) {

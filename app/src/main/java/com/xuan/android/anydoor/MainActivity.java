@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xuan.android.library.AnyDoor;
 import com.xuan.android.library.ui.BaseViewInjector;
+import com.xuan.android.library.ui.DialogViewInject;
 import com.xuan.android.library.ui.LifeViewInjector;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -63,30 +65,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
-                    public View injectView(Context context) {
-                        View view = LayoutInflater.from(context).inflate(R.layout.msg_layout, null);
-                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams
-                                (MATCH_PARENT, dp2px(context, 50));
-                        params.leftMargin = dp2px(context, 20);
-                        params.rightMargin = dp2px(context, 20);
-                        params.topMargin = dp2px(context, 15);
-                        view.setLayoutParams(params);
-                        return view;
+                    public View injectView(Context context, ViewGroup parent) {
+                        return LayoutInflater.from(context).inflate(R.layout.msg_layout,
+                                parent, false);
                     }
 
                     @Override
                     public int gravity() {
-                        return Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-                    }
-
-                    @Override
-                    public long delay() {
-                        return 0;
-                    }
-
-                    @Override
-                    public long duration() {
-                        return 4000;
+                        return Gravity.CENTER;
                     }
                 });
             }
@@ -97,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AnyDoor.openDoor(new BaseViewInjector() {
                     @Override
-                    public View injectView(Context context) {
+                    public View injectView(Context context, ViewGroup parent) {
                         TextView textView = new TextView(context);
                         textView.setText("延迟5s！");
                         return textView;
@@ -125,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     private static class LifeInjector extends LifeViewInjector {
 
         @Override
-        public View injectView(Context context) {
+        public View injectView(Context context, ViewGroup parent) {
             TextView textView = new TextView(context);
             textView.setText("延迟5s！");
             return textView;

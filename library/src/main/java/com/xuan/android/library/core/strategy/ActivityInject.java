@@ -22,45 +22,20 @@ public class ActivityInject implements InjectStrategy {
 
     @Override
     public void inject(View view, final IViewInjector viewInjector) {
-        if (viewInjector == null || view == null) {
+        ViewGroup parent = parentView();
+        if (parent == null) {
             return;
         }
-        final Activity activity = AnyDoor.provider().activity();
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
-        //获取Activity的父布局
-        FrameLayout content = activity.getWindow().getDecorView().findViewById(android.R.id
-                .content);
         //从父布局移除
         removeViewFromParent(view);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params instanceof FrameLayout.LayoutParams) {
             ((FrameLayout.LayoutParams) params).gravity = viewInjector.gravity();
         } else {
-            if (params != null) {
-                if (params instanceof ViewGroup.MarginLayoutParams) {
-                    int left, top, right, bottom;
-                    left = ((ViewGroup.MarginLayoutParams) params).leftMargin;
-                    top = ((ViewGroup.MarginLayoutParams) params).topMargin;
-                    right = ((ViewGroup.MarginLayoutParams) params).rightMargin;
-                    bottom = ((ViewGroup.MarginLayoutParams) params).bottomMargin;
-                    params = new FrameLayout.LayoutParams(params.width, params.height,
-                            viewInjector.gravity());
-                    ((FrameLayout.LayoutParams) params).leftMargin = left;
-                    ((FrameLayout.LayoutParams) params).topMargin = top;
-                    ((FrameLayout.LayoutParams) params).rightMargin = right;
-                    ((FrameLayout.LayoutParams) params).bottomMargin = bottom;
-                } else {
-                    params = new FrameLayout.LayoutParams(params.width, params.height,
-                            viewInjector.gravity());
-                }
-            } else {
-                params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
-                        .LayoutParams.WRAP_CONTENT, viewInjector.gravity());
-            }
+            params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
+                    .LayoutParams.WRAP_CONTENT, viewInjector.gravity());
         }
-        content.addView(view, params);
+        parent.addView(view, params);
         final Animator animator = viewInjector.enter(view);
         if (animator != null) {
             animator.addListener(new AnimatorListenerAdapter() {
@@ -96,6 +71,17 @@ public class ActivityInject implements InjectStrategy {
                 removeViewFromParent(view);
             }
         }
+    }
+
+    @Override
+    public ViewGroup parentView() {
+        final Activity activity = AnyDoor.provider().activity();
+        if (activity == null || activity.isFinishing()) {
+            return null;
+        }
+        //获取Activity的父布局
+        return activity.getWindow().getDecorView().findViewById(android.R.id
+                .content);
     }
 
     private void removeViewFromParent(View view) {

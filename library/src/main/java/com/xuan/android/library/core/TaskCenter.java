@@ -4,16 +4,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 
 import com.xuan.android.library.AnyDoor;
+import com.xuan.android.library.AnyDoorConfig;
 import com.xuan.android.library.model.Task;
-import com.xuan.android.library.ui.IViewInjector;
 
-import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -26,15 +22,13 @@ public class TaskCenter extends Handler {
     private static final int TYPE_DISMISS = 2; // 隐藏布局
     private static final int TYPE_DIRECT_SHOW = 3; // 直接显示布局
     private Queue<Task> taskQueue;//任务队列
-    private volatile WeakReference<View> taskView;//正在显示的View
+
     private volatile Task runningTask;//正在执行的任务
-    private Map<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
     private volatile boolean runningLock;//是否执行任务的标识为
 
     public TaskCenter(Looper mainLooper) {
         super(mainLooper);
         taskQueue = new PriorityBlockingQueue<>();
-        directViews = new ConcurrentHashMap<>();
     }
 
     public void add(Task task) {
@@ -74,6 +68,9 @@ public class TaskCenter extends Handler {
         if (task == null) {
             return;
         }
+        if (task.duration == AnyDoorConfig.UN_AUTO_CANCEL_TOAST) {
+            return;
+        }
         Message message = Message.obtain();
         message.obj = task;
         message.what = TYPE_DISMISS;
@@ -111,11 +108,7 @@ public class TaskCenter extends Handler {
                     if (runningTask != null) {
                         //执行显示逻辑
                         Log.i("xxxxxxxxxx", "执行任务！");
-                        runningLock = true;
-                        View view = runningTask.viewInjector.injectView(AnyDoor.provider()
-                                .activity());
-                        taskView = new WeakReference<>(view);
-                        AnyDoor.provider().injector().inject(view, runningTask.viewInjector);
+                        runningLock = AnyDoor.provider().inject(runningTask.viewInjector, false);
                     }
                 }
                 break;
@@ -123,51 +116,23 @@ public class TaskCenter extends Handler {
                 //直接显示逻辑
                 Task showTask = (Task) msg.obj;
                 if (showTask != null) {
-                    View view = showTask.viewInjector.injectView(AnyDoor.provider().activity());
-                    if (view != null) {
-                        //缓存View
-                        directViews.put(showTask.viewInjector, new WeakReference<>(view));
-                        //显示
-                        AnyDoor.provider().injector().inject(view, showTask.viewInjector);
-                    }
+                    AnyDoor.provider().inject(runningTask.viewInjector, true);
                 }
                 break;
             case TYPE_DISMISS:
                 //移除View
                 Task missTask = (Task) msg.obj;
                 if (missTask != null) {
-                    WeakReference<View> directView = directViews.remove(missTask.viewInjector);
-                    if (directView != null && directView.get() != null) {
-                        //直接显示的隐藏逻辑
-                        View view = directView.get();
-                        if (view != null) {
-                            AnyDoor.provider().injector().remove(view, missTask.viewInjector);
-                        } else {
-                            //任务队列的隐藏逻辑
-                            removeTaskView(missTask);
-                        }
-                    } else {
-                        //任务队列的隐藏逻辑
-                        removeTaskView(missTask);
+                    if (AnyDoor.provider().remove(runningTask.viewInjector)) {
+                        //是否是任务队列移除，如果是，则重置任务队列标志
+                        runningLock = false;
+                        runningTask = null;
                     }
-
                 }
                 //没有任务后，执行未执行任务
                 startTask();
                 break;
         }
-    }
-
-    private void removeTaskView(Task missTask) {
-        //任务队列的隐藏逻辑
-        if (taskView != null) {
-            View view = taskView.get();
-            if (view != null) {
-                AnyDoor.provider().injector().remove(view, missTask.viewInjector);
-            }
-        }
-        runningLock = false;
-        runningTask = null;
     }
 }
 
