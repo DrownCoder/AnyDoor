@@ -10,7 +10,7 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import com.xuan.android.library.AnyDoor;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.

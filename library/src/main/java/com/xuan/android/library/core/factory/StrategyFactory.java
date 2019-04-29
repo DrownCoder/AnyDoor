@@ -8,7 +8,7 @@ import com.xuan.android.library.core.strategy.ActivityInject;
 import com.xuan.android.library.core.strategy.DialogFragmentInject;
 import com.xuan.android.library.core.strategy.InjectStrategy;
 import com.xuan.android.library.life.ActivityObserver;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.

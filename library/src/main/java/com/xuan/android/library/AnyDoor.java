@@ -5,7 +5,12 @@ import android.app.Application;
 import com.xuan.android.library.core.EnergyProvider;
 import com.xuan.android.library.injectview.InjectPageViewer;
 import com.xuan.android.library.toast.ToastManager;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.toast.helper.IToastStyle;
+import com.xuan.android.library.toast.helper.ToastBuilder;
+import com.xuan.android.library.ui.base.BaseViewInjector;
+import com.xuan.android.library.ui.base.DialogViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
+import com.xuan.android.library.ui.base.LifeViewInjector;
 
 /**
  * Author : xuan.
@@ -53,9 +58,33 @@ public class AnyDoor {
     }
 
     /**
+     * 显示自定义Toast
+     */
+    public static void showToast(String str, IToastStyle toastStyle) {
+        ToastManager.showToast(str, toastStyle);
+    }
+
+    /**
+     * 显示自定义Toast
+     */
+    public static void showToast(ToastBuilder builder) {
+        ToastManager.showToast(builder);
+    }
+
+    /**
+     * 取消Toast
+     */
+    public static void cancelToast() {
+        ToastManager.cancel();
+    }
+
+    /**
      * 添加View
      *
      * @param viewInjector 注入的View
+     *                     {@link BaseViewInjector} 基础的注入模版
+     *                     {@link DialogViewInjector} Dialog形式的注入模版，不会自动取消
+     *                     {@link LifeViewInjector} 感知生命周期的注入模版
      */
     public static void openDoor(IViewInjector viewInjector) {
         openDoor(viewInjector, true);
@@ -65,6 +94,9 @@ public class AnyDoor {
      * 添加View
      *
      * @param viewInjector 注入的View
+     *                     {@link BaseViewInjector} 基础的注入模版
+     *                     {@link DialogViewInjector} Dialog形式的注入模版，不会自动取消
+     *                     {@link LifeViewInjector} 感知生命周期的注入模版
      * @param constrained  是否受任务队列的约束
      */
     public static void openDoor(IViewInjector viewInjector, boolean constrained) {
@@ -94,3 +126,4 @@ public class AnyDoor {
         AnyDoor.provider().engine().cancelAllTask();
     }
 }
+

@@ -3,9 +3,8 @@ package com.xuan.android.library.core.factory;
 import android.os.SystemClock;
 
 import com.xuan.android.library.AnyDoorConfig;
-import com.xuan.android.library.core.factory.ITaskFactory;
 import com.xuan.android.library.model.Task;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 
 /**

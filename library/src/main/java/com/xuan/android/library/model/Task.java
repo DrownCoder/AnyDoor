@@ -1,11 +1,11 @@
 package com.xuan.android.library.model;
 
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.
  * Date : 2019/4/15.
- * Description :the description of this file
+ * Description :注入View的任务
  */
 public class Task implements Comparable<Task> {
     public long startTime;

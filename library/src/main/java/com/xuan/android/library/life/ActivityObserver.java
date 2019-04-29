@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.view.WindowManager;
 
 import java.lang.ref.WeakReference;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Author : xuan.
  * Date : 2019/4/12.
- * Description :Activity观察者
+ * Description :Activity周期观察者
  */
 public class ActivityObserver implements Application.ActivityLifecycleCallbacks {
     /**

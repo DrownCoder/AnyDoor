@@ -2,6 +2,7 @@ package com.xuan.android.library.toast;
 
 import android.app.Application;
 import android.os.Build;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.xuan.android.library.toast.helper.DefaultToastStyle;
@@ -43,30 +44,15 @@ public class ToastManager {
         //构建Toast
         Toast toast = createToast(application);
         // 初始化布局
-        ToastUtil.setView(toast, ToastUtil.createTextView(application.getApplicationContext(),
-                style));
+        if (style.getToastView() != null) {
+            ToastUtil.setView(toast, style.getToastView());
+        } else {
+            ToastUtil.setView(toast, ToastUtil.createTextView(application.getApplicationContext(),
+                    style));
+        }
         // 初始化位置
         ToastUtil.setGravity(toast, style.getGravity(), style.getXOffset(),
                 style.getYOffset());
-        return toast;
-    }
-
-    /**
-     * 初始化Toast
-     */
-    private static Toast initToast(Application application, ToastBuilder builder) {
-        //构建Toast
-        Toast toast = createToast(application);
-        // 初始化布局
-        if (builder.getToastView() != null) {
-            ToastUtil.setView(toast, builder.getToastView());
-        } else {
-            ToastUtil.setView(toast, ToastUtil.createTextView(application.getApplicationContext(),
-                    builder));
-        }
-        // 初始化位置
-        ToastUtil.setGravity(toast, builder.getGravity(), builder.getXOffset(),
-                builder.getYOffset());
         return toast;
     }
 
@@ -105,18 +91,23 @@ public class ToastManager {
         sToastHandler.show();
     }
 
-    public static void showToast(ToastBuilder toastBuilder) {
-        if (toastBuilder == null) {
+    public static void showToast(CharSequence str, IToastStyle toastBuilder) {
+        if (toastBuilder == null || TextUtils.isEmpty(str)) {
             return;
         }
         if (checkToastState()) return;
         Toast toast = initToast(app, toastBuilder);
-        if (toastBuilder.getToast() == null || toastBuilder.getToast().equals("")) {
-            return;
-        }
-        sToastHandler.add(toastBuilder.getToast());
+        sToastHandler.add(str);
         sToastHandler.setPageToast(toast);
         sToastHandler.show();
+    }
+
+    public static void showToast(ToastBuilder builder) {
+        showToast(builder.getToast(), builder);
+    }
+
+    public static void cancel() {
+        sToastHandler.cancel();
     }
 
 }

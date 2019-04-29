@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.xuan.android.library.AnyDoor;
 import com.xuan.android.library.core.strategy.InjectStrategy;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -20,7 +20,7 @@ import static com.xuan.android.library.AnyDoorConfig.TAG;
  */
 public class InjectViewManager {
     private volatile WeakReference<View> taskView;//正在显示的View
-    private Map<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
+    private volatile Map<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
     private InjectStrategy injectStrategy;
 
     InjectViewManager() {

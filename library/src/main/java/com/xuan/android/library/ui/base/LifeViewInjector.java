@@ -1,4 +1,4 @@
-package com.xuan.android.library.ui;
+package com.xuan.android.library.ui.base;
 
 import android.content.Intent;
 import android.os.Bundle;

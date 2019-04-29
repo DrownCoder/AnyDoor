@@ -116,14 +116,14 @@ public class TaskCenter extends Handler {
                 //直接显示逻辑
                 Task showTask = (Task) msg.obj;
                 if (showTask != null) {
-                    AnyDoor.provider().inject(runningTask.viewInjector, true);
+                    AnyDoor.provider().inject(showTask.viewInjector, true);
                 }
                 break;
             case TYPE_DISMISS:
                 //移除View
                 Task missTask = (Task) msg.obj;
                 if (missTask != null) {
-                    if (AnyDoor.provider().remove(runningTask.viewInjector)) {
+                    if (AnyDoor.provider().remove(missTask.viewInjector)) {
                         //是否是任务队列移除，如果是，则重置任务队列标志
                         runningLock = false;
                         runningTask = null;

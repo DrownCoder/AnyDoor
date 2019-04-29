@@ -7,7 +7,7 @@ import android.app.FragmentTransaction;
 import com.xuan.android.library.AnyDoor;
 import com.xuan.android.library.life.LifeFragment;
 import com.xuan.android.library.life.LifeObserver;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.

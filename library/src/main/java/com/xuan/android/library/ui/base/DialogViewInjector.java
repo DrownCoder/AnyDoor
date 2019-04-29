@@ -1,4 +1,4 @@
-package com.xuan.android.library.ui;
+package com.xuan.android.library.ui.base;
 
 import com.xuan.android.library.AnyDoorConfig;
 
@@ -7,7 +7,7 @@ import com.xuan.android.library.AnyDoorConfig;
  * Date : 2019/4/26.
  * Description :不自动消失的弹窗
  */
-public abstract class DialogViewInject extends BaseViewInjector {
+public abstract class DialogViewInjector extends BaseViewInjector {
 
     @Override
     public long duration() {

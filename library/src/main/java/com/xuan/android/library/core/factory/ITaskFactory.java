@@ -1,7 +1,7 @@
 package com.xuan.android.library.core.factory;
 
 import com.xuan.android.library.model.Task;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.

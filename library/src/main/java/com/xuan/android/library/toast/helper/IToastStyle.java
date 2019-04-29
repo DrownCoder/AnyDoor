@@ -1,5 +1,7 @@
 package com.xuan.android.library.toast.helper;
 
+import android.view.View;
+
 /**
  *    author : Android 轮子哥
  *    github : https://github.com/getActivity/ToastUtils
@@ -7,6 +9,7 @@ package com.xuan.android.library.toast.helper;
  *    desc   : 默认样式接口
  */
 public interface IToastStyle {
+    View getToastView();
 
     int getGravity(); // 吐司的重心
     int getXOffset(); // X轴偏移

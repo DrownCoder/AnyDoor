@@ -181,6 +181,7 @@ public class ToastBuilder implements IToastStyle {
         return toast;
     }
 
+    @Override
     public View getToastView() {
         return toastView;
     }

@@ -13,7 +13,7 @@ import com.xuan.android.library.core.strategy.InjectStrategy;
 import com.xuan.android.library.injectview.InjectPageViewer;
 import com.xuan.android.library.life.ActivityObserver;
 import com.xuan.android.library.toast.ToastManager;
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.

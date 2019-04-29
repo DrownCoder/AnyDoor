@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.xuan.android.library.AnyDoor;
-import com.xuan.android.library.ui.BaseViewInjector;
+import com.xuan.android.library.ui.base.BaseViewInjector;
 
 /**
  * Author : xuan.

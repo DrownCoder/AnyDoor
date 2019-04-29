@@ -10,15 +10,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xuan.android.library.AnyDoor;
-import com.xuan.android.library.ui.BaseViewInjector;
-import com.xuan.android.library.ui.DialogViewInject;
-import com.xuan.android.library.ui.LifeViewInjector;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import com.xuan.android.library.ui.base.BaseViewInjector;
+import com.xuan.android.library.ui.base.LifeViewInjector;
 
 public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler() {

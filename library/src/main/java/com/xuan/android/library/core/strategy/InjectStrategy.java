@@ -3,7 +3,7 @@ package com.xuan.android.library.core.strategy;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xuan.android.library.ui.IViewInjector;
+import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
  * Author : xuan.
