@@ -1,9 +1,14 @@
 package com.xuan.android.library.core;
 
+import android.app.Activity;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.xuan.android.library.AnyDoor;
+import com.xuan.android.library.AnyDoorConfig;
 import com.xuan.android.library.core.strategy.InjectStrategy;
 import com.xuan.android.library.ui.base.IViewInjector;
 
@@ -11,7 +16,6 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.xuan.android.library.AnyDoorConfig.TAG;
 
 /**
  * Author : xuan.
@@ -53,6 +57,7 @@ public class InjectViewManager {
             taskView = new WeakReference<>(view);
         }
         //注入
+        Log.i(AnyDoorConfig.TAG, "执行注入");
         injectStrategy.inject(view, viewInjector);
         return true;
     }
@@ -65,13 +70,16 @@ public class InjectViewManager {
             return true;
         }
         if (view.getParent() != null) {
-            Log.e(TAG, "Can't inject the view which already has parent!\n无法注入已经有父布局的View！，请检测使用LayoutInflater.inflate的方法的第三个参数是否为true，如果为true，默认会加入父布局，并且返回父布局！请设置为false");
+            Log.e(AnyDoorConfig.TAG, "Can't inject the view which already has " +
+                    "parent!\n无法注入已经有父布局的View！，请检测使用LayoutInflater" +
+                    ".inflate的方法的第三个参数是否为true，如果为true，默认会加入父布局，并且返回父布局！请设置为false");
             return true;
         }
         return false;
     }
 
     boolean remove(IViewInjector viewInjector) {
+        Log.i(AnyDoorConfig.TAG, "执行移除");
         WeakReference<View> directView = directViews.remove(viewInjector);
         if (directView != null && directView.get() != null) {
             //直接显示的隐藏逻辑
@@ -99,6 +107,55 @@ public class InjectViewManager {
             if (view != null) {
                 injectStrategy.remove(view, viewInjector);
             }
+        }
+    }
+
+    public void removeRunningView() {
+        View view;
+        if (taskView != null) {
+            view = taskView.get();
+            if (view != null) {
+                removeViewFromParent(view);
+            }
+        }
+    }
+
+    public boolean checkViewAttachStatus() {
+        if (taskView == null || taskView.get() == null) {
+            return false;
+        }
+        View view = taskView.get();
+        return checkViewAttachStatus(view);
+    }
+
+    public static boolean checkViewAttachStatus(View view) {
+        if (view == null || view.getContext() == null) {
+            return false;
+        }
+        if (view.getContext() instanceof Activity) {
+            if (((Activity) view.getContext()).isFinishing()) {
+                return false;
+            }
+        }
+        if (view.getParent() == null) {
+            return false;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return view.isAttachedToWindow();
+        } else {
+            return view.getWindowToken() != null;
+        }
+    }
+
+    public static void removeViewFromParent(View view) {
+        if (view == null) {
+            return;
+        }
+        //从父布局移除
+        ViewParent parent = view.getParent();
+        if (parent instanceof ViewGroup) {
+            ViewGroup vp = (ViewGroup) parent;
+            vp.removeView(view);
         }
     }
 }

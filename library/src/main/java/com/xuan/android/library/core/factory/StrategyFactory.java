@@ -28,8 +28,8 @@ public class StrategyFactory implements IInjectStrategyFactory {
     @Override
     public InjectStrategy injectStrategy(IViewInjector viewInjector) {
         //如果当前弹出的是一个全屏的DialogFragment,则需要特殊的注入策略，注入到DialogFragment这个Window中
-        if (activityObserver.getCurFragment() instanceof DialogFragment && checkDialogValid
-                ((DialogFragment) activityObserver.getCurFragment())) {
+        if (activityObserver.getCurDialogFragment() instanceof DialogFragment && checkDialogValid
+                ((DialogFragment) activityObserver.getCurDialogFragment())) {
             if (dialogViewInject == null) {
                 dialogViewInject = new DialogFragmentInject();
             }

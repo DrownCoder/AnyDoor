@@ -20,11 +20,11 @@ public class TaskFactory implements ITaskFactory {
         task.delay = viewInjector.delay();
         task.startTime = SystemClock.uptimeMillis() + task.delay;
         task.duration = viewInjector.duration();
-        task.singleLock = constrained;
-        if (task.singleLock) {
+        task.asyncLock = constrained;
+        if (task.asyncLock) {
             //如果弹窗大于显示时长限制，则进化为特殊弹窗，不受任务队列限制
             if (task.duration > AnyDoorConfig.MAX_SHOW_LIMIT) {
-                task.singleLock = false;
+                task.asyncLock = false;
             }
         }
         return task;

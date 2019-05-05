@@ -1,5 +1,7 @@
 package com.xuan.android.library.toast.helper;
 
+import android.view.View;
+
 import static com.xuan.android.library.toast.ToastConfig.*;
 
 /**
@@ -8,6 +10,11 @@ import static com.xuan.android.library.toast.ToastConfig.*;
  * Description :默认Toast样式
  */
 public class DefaultToastStyle implements IToastStyle {
+    @Override
+    public View getToastView() {
+        return null;
+    }
+
     @Override
     public int getGravity() {
         return TOAST_GRAVITY;

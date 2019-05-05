@@ -5,10 +5,13 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.WindowManager;
+
+import com.xuan.android.library.AnyDoor;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -61,7 +64,8 @@ public class ActivityObserver implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
+        //每次有页面销毁的时候，清楚所有未执行的任务，防止内存泄漏
+        AnyDoor.clear();
     }
 
     /**
@@ -79,7 +83,7 @@ public class ActivityObserver implements Application.ActivityLifecycleCallbacks 
      * 获取当前页面的Fragment
      */
     @Nullable
-    public Fragment getCurFragment() {
+    public DialogFragment getCurDialogFragment() {
         if (mActivity == null) {
             return null;
         }
@@ -89,11 +93,11 @@ public class ActivityObserver implements Application.ActivityLifecycleCallbacks 
         }
         FragmentManager fragManager = ((FragmentActivity) mActivity.get())
                 .getSupportFragmentManager();
-        fragManager.getFragments();
         List<Fragment> fragments = fragManager.getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment != null && fragment.isVisible())
-                return fragment;
+            if (fragment instanceof DialogFragment && fragment.isVisible()) {
+                return (DialogFragment) fragment;
+            }
         }
         return null;
     }

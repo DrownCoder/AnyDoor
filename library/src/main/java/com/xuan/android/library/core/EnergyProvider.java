@@ -2,6 +2,7 @@ package com.xuan.android.library.core;
 
 import android.app.Activity;
 import android.app.Application;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.WindowManager;
 
@@ -58,8 +59,8 @@ public class EnergyProvider {
         return activityObserver.getCurActivity();
     }
 
-    public Fragment fragment() {
-        return activityObserver.getCurFragment();
+    public DialogFragment dialogFragment() {
+        return activityObserver.getCurDialogFragment();
     }
 
     public Application application() {
@@ -68,6 +69,10 @@ public class EnergyProvider {
 
     public boolean inject(IViewInjector viewInjector, boolean isDirect) {
         return viewManager.inject(viewInjector, isDirect);
+    }
+
+    public InjectViewManager viewManager() {
+        return viewManager;
     }
 
     public boolean remove(IViewInjector viewInjector) {

@@ -12,6 +12,7 @@ import com.xuan.android.library.ui.base.DialogViewInjector;
 import com.xuan.android.library.ui.base.IViewInjector;
 import com.xuan.android.library.ui.base.LifeViewInjector;
 
+
 /**
  * Author : xuan.
  * Date : 2019/4/13.
@@ -97,19 +98,29 @@ public class AnyDoor {
      *                     {@link BaseViewInjector} 基础的注入模版
      *                     {@link DialogViewInjector} Dialog形式的注入模版，不会自动取消
      *                     {@link LifeViewInjector} 感知生命周期的注入模版
-     * @param constrained  是否受任务队列的约束
+     * @param async        是否受任务队列的约束
      */
-    public static void openDoor(IViewInjector viewInjector, boolean constrained) {
-        InjectPageViewer.show(viewInjector, constrained);
+    public static void openDoor(IViewInjector viewInjector, boolean async) {
+        InjectPageViewer.show(viewInjector, async);
     }
 
     /**
-     * 移除注入的View
+     * 主动移除注入的View，不受duration限制，可以提前消失
      *
      * @param viewInjector 注入的View，保证和添加的是同一实例
      */
     public static void closeDoor(IViewInjector viewInjector) {
-        InjectPageViewer.dismiss(viewInjector);
+        closeDoor(viewInjector, true);
+    }
+
+    /**
+     * 主动移除注入的View，不受duration限制，可以提前消失
+     *
+     * @param viewInjector 注入的View，保证和添加的是同一实例
+     * @param async        是否是异步
+     */
+    public static void closeDoor(IViewInjector viewInjector, boolean async) {
+        InjectPageViewer.dismiss(viewInjector, async);
     }
 
     /**
@@ -126,4 +137,3 @@ public class AnyDoor {
         AnyDoor.provider().engine().cancelAllTask();
     }
 }
-
