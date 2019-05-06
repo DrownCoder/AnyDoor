@@ -35,7 +35,7 @@ public class DialogFragmentInject implements InjectStrategy {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 Log.i(AnyDoorConfig.TAG, "自动取消！");
-                AnyDoor.provider().engine().cancelRunningTask();
+                AnyDoor.provider().clear();
             }
         });
         //从父布局移除

@@ -60,6 +60,8 @@ public class AnyDoor {
 
     /**
      * 显示自定义Toast
+     *
+     * @param toastStyle 自定义Toast类型，可以使用{@link ToastBuilder}
      */
     public static void showToast(String str, IToastStyle toastStyle) {
         ToastManager.showToast(str, toastStyle);
@@ -67,6 +69,8 @@ public class AnyDoor {
 
     /**
      * 显示自定义Toast
+     *
+     * @param builder 自定义Toast类型
      */
     public static void showToast(ToastBuilder builder) {
         ToastManager.showToast(builder);
@@ -124,16 +128,9 @@ public class AnyDoor {
     }
 
     /**
-     * 移除正在显示的View
-     */
-    public static void cancel() {
-        AnyDoor.provider().engine().cancelRunningTask();
-    }
-
-    /**
      * 移除所有任务的View，包括未执行的
      */
     public static void clear() {
-        AnyDoor.provider().engine().cancelAllTask();
+        AnyDoor.provider().clear();
     }
 }

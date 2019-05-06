@@ -17,5 +17,6 @@ public interface InjectStrategy {
     //移除方式
     void remove(View view, IViewInjector viewInjector);
 
+    //父布局
     ViewGroup parentView();
 }

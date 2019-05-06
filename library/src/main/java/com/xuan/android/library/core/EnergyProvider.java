@@ -47,18 +47,58 @@ public class EnergyProvider {
         strategyFactory = new StrategyFactory(activityObserver);
     }
 
+    /**
+     * 注入策略
+     */
     InjectStrategy injector(IViewInjector viewInjector) {
         return strategyFactory.injectStrategy(viewInjector);
     }
 
+    /**
+     * WindowManager管理类
+     */
     public WindowManager windowManager() {
         return activityObserver.getWindowManager();
     }
 
+    /**
+     * View管理类
+     */
+    public InjectViewManager viewManager() {
+        return viewManager;
+    }
+
+    /**
+     * 任务处理中心
+     */
+    public TaskCenter engine() {
+        return engine;
+    }
+
+    /**
+     * 任务创建工厂
+     */
+    public ITaskFactory factory() {
+        return factory;
+    }
+
+    /**
+     * 移除任务
+     */
+    public boolean remove(IViewInjector viewInjector) {
+        return viewManager.remove(viewInjector);
+    }
+
+    /**
+     * 当前显示的Activity
+     */
     public Activity activity() {
         return activityObserver.getCurActivity();
     }
 
+    /**
+     * 当前显示的DialogFragment
+     */
     public DialogFragment dialogFragment() {
         return activityObserver.getCurDialogFragment();
     }
@@ -67,23 +107,15 @@ public class EnergyProvider {
         return application;
     }
 
+    /**
+     * 注入
+     */
     public boolean inject(IViewInjector viewInjector, boolean isDirect) {
         return viewManager.inject(viewInjector, isDirect);
     }
 
-    public InjectViewManager viewManager() {
-        return viewManager;
-    }
-
-    public boolean remove(IViewInjector viewInjector) {
-        return viewManager.remove(viewInjector);
-    }
-
-    public TaskCenter engine() {
-        return engine;
-    }
-
-    public ITaskFactory factory() {
-        return factory;
+    public void clear() {
+        engine.cancelAllTask();
+        viewManager.clear();
     }
 }

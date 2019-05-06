@@ -30,6 +30,7 @@ public class TaskCenter extends Handler {
 
     public TaskCenter(Looper mainLooper) {
         super(mainLooper);
+        //优先级队列
         taskQueue = new PriorityBlockingQueue<>();
     }
 

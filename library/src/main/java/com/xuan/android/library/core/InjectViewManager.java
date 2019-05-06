@@ -110,16 +110,6 @@ public class InjectViewManager {
         }
     }
 
-    public void removeRunningView() {
-        View view;
-        if (taskView != null) {
-            view = taskView.get();
-            if (view != null) {
-                removeViewFromParent(view);
-            }
-        }
-    }
-
     public boolean checkViewAttachStatus() {
         if (taskView == null || taskView.get() == null) {
             return false;
@@ -156,6 +146,35 @@ public class InjectViewManager {
         if (parent instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) parent;
             vp.removeView(view);
+        }
+    }
+
+    /**
+     * 清理所有的View，并且移除Parent
+     */
+    public void clear() {
+        if (directViews != null) {
+            for (WeakReference<View> wkView : directViews.values()) {
+                removeWkView(wkView);
+            }
+            directViews.clear();
+        }
+        if (taskView != null) {
+            removeWkView(taskView);
+            taskView.clear();
+        }
+    }
+
+    /**
+     * 清理一个弱引用View
+     */
+    private void removeWkView(WeakReference<View> wkView) {
+        if (wkView != null) {
+            View target = wkView.get();
+            if (target != null) {
+                Log.i(AnyDoorConfig.TAG, "清理View");
+                removeViewFromParent(target);
+            }
         }
     }
 }

@@ -9,15 +9,14 @@ import android.support.annotation.Nullable;
 /**
  * Author : xuan.
  * Date : 2018/8/23.
- * Description :监听什么周期的空Fragment
+ * Description :监听生命周期的空Fragment
  */
 
 public class LifeFragment extends Fragment {
     private LifeObserver lifeCycle;
 
     public static LifeFragment newInstance() {
-        LifeFragment fragment = new LifeFragment();
-        return fragment;
+        return new LifeFragment();
     }
 
     public void setLifeCycle(LifeObserver lifeCycle) {

@@ -4,12 +4,14 @@ package com.xuan.android.library.core.strategy;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import com.xuan.android.library.AnyDoor;
+import com.xuan.android.library.AnyDoorConfig;
+import com.xuan.android.library.core.InjectViewManager;
 import com.xuan.android.library.ui.base.IViewInjector;
 
 /**
@@ -27,7 +29,7 @@ public class ActivityInject implements InjectStrategy {
             return;
         }
         //从父布局移除
-        removeViewFromParent(view);
+        InjectViewManager.removeViewFromParent(view);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params instanceof FrameLayout.LayoutParams) {
             ((FrameLayout.LayoutParams) params).gravity = viewInjector.gravity();
@@ -35,6 +37,7 @@ public class ActivityInject implements InjectStrategy {
             params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
                     .LayoutParams.WRAP_CONTENT, viewInjector.gravity());
         }
+        Log.i(AnyDoorConfig.TAG, view.getContext().getClass().getSimpleName());
         parent.addView(view, params);
         final Animator animator = viewInjector.enter(view);
         if (animator != null) {
@@ -57,18 +60,18 @@ public class ActivityInject implements InjectStrategy {
         if (viewInjector == null || view == null) {
             return;
         }
-        if (view.getParent() != null) {
+        if (view.getParent() != null && InjectViewManager.checkViewAttachStatus(view)) {
             Animator animator = viewInjector.out(view);
             if (animator != null) {
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        removeViewFromParent(view);
+                        InjectViewManager.removeViewFromParent(view);
                     }
                 });
                 animator.start();
             } else {
-                removeViewFromParent(view);
+                InjectViewManager.removeViewFromParent(view);
             }
         }
     }
@@ -82,14 +85,5 @@ public class ActivityInject implements InjectStrategy {
         //获取Activity的父布局
         return activity.getWindow().getDecorView().findViewById(android.R.id
                 .content);
-    }
-
-    private void removeViewFromParent(View view) {
-        //从父布局移除
-        ViewParent parent = view.getParent();
-        if (parent instanceof ViewGroup) {
-            ViewGroup vp = (ViewGroup) parent;
-            vp.removeView(view);
-        }
     }
 }

@@ -19,13 +19,9 @@ import java.util.List;
 /**
  * Author : xuan.
  * Date : 2019/4/12.
- * Description :Activity周期观察者
+ * Description :Activity生命周期观察者
  */
 public class ActivityObserver implements Application.ActivityLifecycleCallbacks {
-    /**
-     * 用于检测当前APP是否运行于前台
-     */
-    private int appCount = 0;
 
     private WeakReference<Activity> mActivity;
 
@@ -39,11 +35,17 @@ public class ActivityObserver implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityStarted(Activity activity) {
-        appCount++;
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
+        if (mActivity != null) {
+            if (mActivity.get() != activity) {
+                //执行了跳转
+                //每次执行了页面跳转，则清理所有任务，暂时不支持跨页面
+                AnyDoor.clear();
+            }
+        }
         mActivity = new WeakReference<>(activity);
     }
 
@@ -54,7 +56,6 @@ public class ActivityObserver implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityStopped(Activity activity) {
-        appCount--;
     }
 
     @Override
@@ -64,8 +65,6 @@ public class ActivityObserver implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        //每次有页面销毁的时候，清楚所有未执行的任务，防止内存泄漏
-        AnyDoor.clear();
     }
 
     /**

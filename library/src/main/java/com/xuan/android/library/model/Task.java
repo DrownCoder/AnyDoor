@@ -5,7 +5,7 @@ import com.xuan.android.library.ui.base.IViewInjector;
 /**
  * Author : xuan.
  * Date : 2019/4/15.
- * Description :注入View的任务
+ * Description :注入View的任务，实现{@link Comparable}接口，用于加入优先级队列时比较
  */
 public class Task implements Comparable<Task> {
     public long startTime;
@@ -19,9 +19,13 @@ public class Task implements Comparable<Task> {
         asyncLock = true;
     }
 
+    /**
+     * 按照任务的开始先后比较
+     */
     @Override
     public int compareTo(Task o) {
         return startTime > o.startTime ? 1 : -1;
     }
 }
+
 
