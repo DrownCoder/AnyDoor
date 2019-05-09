@@ -176,7 +176,11 @@ public class TaskCenter extends Handler {
             case TYPE_DISMISS:
                 //移除View
                 IViewInjector viewInjector = (IViewInjector) msg.obj;
-                removeTask(viewInjector, runningTask.get());
+                if (runningTask == null) {
+                    removeTask(viewInjector, null);
+                } else {
+                    removeTask(viewInjector, runningTask.get());
+                }
                 break;
         }
     }

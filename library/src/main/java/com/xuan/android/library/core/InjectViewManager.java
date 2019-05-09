@@ -25,7 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InjectViewManager {
     private volatile WeakReference<View> taskView;//正在显示的View
     private volatile Map<IViewInjector, WeakReference<View>> directViews;//不受任务队列显示的任务集合
-    private InjectStrategy injectStrategy;
+    private InjectStrategy directStrategy;
+    private InjectStrategy taskStrategy;
 
     InjectViewManager() {
         directViews = new ConcurrentHashMap<>();
@@ -42,7 +43,12 @@ public class InjectViewManager {
             return false;
         }
         //选择注入策略
-        injectStrategy = AnyDoor.provider().injector(viewInjector);
+        InjectStrategy injectStrategy = AnyDoor.provider().injector(viewInjector);
+        if (isDirect) {
+            directStrategy = injectStrategy;
+        }else{
+            taskStrategy = injectStrategy;
+        }
         //创建View
         View view = viewInjector.injectView(AnyDoor.provider()
                 .activity(), injectStrategy.parentView());
@@ -85,8 +91,12 @@ public class InjectViewManager {
             //直接显示的隐藏逻辑
             View view = directView.get();
             if (view != null) {
-                injectStrategy = AnyDoor.provider().injector(viewInjector);
-                injectStrategy.remove(view, viewInjector);
+                if (directStrategy != null) {
+                    directStrategy.remove(view, viewInjector);
+                    directStrategy = null;
+                }else{
+                    removeViewFromParent(view);
+                }
             } else {
                 //任务队列的隐藏逻辑
                 removeTaskView(viewInjector);
@@ -105,7 +115,12 @@ public class InjectViewManager {
         if (taskView != null) {
             view = taskView.get();
             if (view != null) {
-                injectStrategy.remove(view, viewInjector);
+                if (taskStrategy != null) {
+                    taskStrategy.remove(view, viewInjector);
+                    taskStrategy = null;
+                }else{
+                    removeViewFromParent(view);
+                }
             }
         }
     }
